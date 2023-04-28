@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------------------
 # Fastvue Reporter Installation Script
-# Copyright © 2022 Fastvue Pty Ltd
+# Copyright © 2023 Fastvue Pty Ltd
 # http://go.fastvue.co/?id=170
 # ------------------------------------------------------------------------------
 
