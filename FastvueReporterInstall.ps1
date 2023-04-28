@@ -826,7 +826,7 @@ if ($Server) {
 		# ------------------------------------------------------------------------------
 		# Configure Syslog Source
 		# ------------------------------------------------------------------------------
-		if ($SyslogSourceHost -and $ConfigTarget -contains "SyslogSource") {
+		if ($SyslogSourceHost -and $ConfigTarget -contains "Source") {
 			Write-Host "- Configuring Syslog Source"
 
 			$existingSources = Invoke-RestMethod -Credential $ApiCredential -Uri "$FastvueReporterUrl/_/api?f=Settings.Sources.GetSources" -Method Get
