@@ -532,7 +532,16 @@ if ($IISVDir -ne "") {
 }
 
 if (!$FastvueReporterUrl) {
-	$FastvueReporterUrl = "http://localhost/$IISVDir"
+	if ($Server) {
+		# Localhost is still included when $Server is set as the script will be running on the server itself
+		$PossibleFastvueReporterUrls = @("http://localhost/$IISVDir", "http://127.0.0.1/$IISVDir", "http://${Server}/${IISVDir}");
+		$FastvueReporterUrl = "http://localhost/$IISVDir"
+	} else {
+		$PossibleFastvueReporterUrls = @("http://localhost/$IISVDir", "http://127.0.0.1/$IISVDir");
+		$FastvueReporterUrl = "http://localhost/$IISVDir"
+	}
+} else {
+	$PossibleFastvueReporterUrls = @($FastvueReporterUrl);
 }
 
 # ------------------------------------------------------------------------------
@@ -574,7 +583,7 @@ if (!$InstallerExecutablePath -and $PerformInstall) {
 	}
 }
 
-if ($Server) {
+if ($Server -and !$InvokedFromRemote) {
 	# ------------------------------------------------------------------------------
 	# REMOTE MODE: Perform script operations on a remote system
 	# ------------------------------------------------------------------------------
@@ -606,7 +615,6 @@ if ($Server) {
 		}
 	
 		$RemoteParameters = [hashtable]$PSBoundParameters
-		$RemoteParameters["Server"] = $null
 		$RemoteParameters["InvokedFromRemote"] = $true
 
 		Copy-Item -ToSession $RemoteSession $ThisScriptPath -Destination "$TempPath\FastvueReporterInstall.ps1" -ErrorAction Stop
@@ -738,13 +746,25 @@ if ($Server) {
 		$ErrorActionPreference = "SilentlyContinue"
 		$serviceResponsive = False
 		while (!$serviceResponsive) {
-			$response = Invoke-RestMethod -Credential $ApiCredential -TimeoutSec 2 -Uri "$FastvueReporterUrl/_/api?f=Service.Status"
-			$serviceResponsive = $?
+			foreach ($PossibleUrl in $PossibleFastvueReporterUrls) {
+				$response = Invoke-RestMethod -Credential $ApiCredential -TimeoutSec 2 -Uri "$PossibleUrl/_/api?f=Service.Status"
+				$serviceResponsive = $?
 
-			if ((New-TimeSpan -Start $waitResponsiveStart).TotalSeconds -gt $waitResponsiveDuration) {
-				$ErrorActionPreference = $oldErrorActionPreference
-				Write-Error "Unable to verify connection to $ProductName at '$FastvueReporterUrl' after $waitResponsiveDuration seconds. Please check the installation configuration and try again."
-				Exit 1
+				if ($serviceResponsive) {
+					$FastvueReporterUrl = $PossibleUrl
+					write-Host "  - Connected via $FastvueReporterUrl"
+				} else {
+					if ((New-TimeSpan -Start $waitResponsiveStart).TotalSeconds -gt $waitResponsiveDuration) {
+						$ErrorActionPreference = $oldErrorActionPreference
+						Write-Error "Unable to verify connection to $ProductName at the following URLs after $waitResponsiveDuration seconds. Please check the installation configuration and try again."
+
+						foreach ($url in $PossibleFastvueReporterUrls) {
+							Write-Host "  - $url"
+						}
+				
+						Exit 1
+					}
+				}
 			}
 		}
 		$ErrorActionPreference = $oldErrorActionPreference
