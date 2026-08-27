@@ -744,7 +744,7 @@ if ($Server -and !$InvokedFromRemote) {
 		$waitResponsiveDuration = 120
 		$oldErrorActionPreference = $ErrorActionPreference
 		$ErrorActionPreference = "SilentlyContinue"
-		$serviceResponsive = False
+		$serviceResponsive = $false
 		while (!$serviceResponsive) {
 			foreach ($PossibleUrl in $PossibleFastvueReporterUrls) {
 				$response = Invoke-RestMethod -Credential $ApiCredential -TimeoutSec 2 -Uri "$PossibleUrl/_/api?f=Service.Status"
