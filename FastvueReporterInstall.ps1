@@ -461,7 +461,7 @@ if ($ReleaseChannel -eq "Stable") {
 # ------------------------------------------------------------------------------
 # Download Fastvue Reporter product manifest and retrieve information for requested product and version.
 # ------------------------------------------------------------------------------
-$ReleaseManifest = [XML](Invoke-WebRequest -URI "$InstallerBaseUrl/Manifest.xml").Content
+$ReleaseManifest = [XML](Invoke-WebRequest -UseBasicParsing -URI "$InstallerBaseUrl/Manifest.xml").Content
 
 if (!$ReleaseManifest) {
 	Write-Error "Failed to download release manifest. Exiting"
@@ -571,7 +571,7 @@ if (!$InstallerExecutablePath -and $PerformInstall) {
 		$ProgressPreference = 'SilentlyContinue'
 
 		try {
-			Invoke-WebRequest -Uri $FastvueReporterInstallerDownloadUrl -OutFile $InstallerExecutablePath
+			Invoke-WebRequest -UseBasicParsing -Uri $FastvueReporterInstallerDownloadUrl -OutFile $InstallerExecutablePath
 		} catch {
 			Write-Error "Failed to download installer: $_"
 			Exit 1
