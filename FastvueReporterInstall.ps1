@@ -548,7 +548,7 @@ if (!$FastvueReporterUrl) {
 # Download installer executable for specified product and version
 # ------------------------------------------------------------------------------
 if (!$InstallerExecutablePath -and $PerformInstall) {
-	$InstallerExecutablePath = "$env:TEMP\FastvueReporterSetup_${Product}_${ReleaseChannelSuffix}.exe"
+	$InstallerExecutablePath = "$env:TEMP\FastvueReporterSetup_${Product}_${ProductVersion}_${ReleaseChannelSuffix}.exe"
 	
 	Write-Host "- Downloading Installer"
 
