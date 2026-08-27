@@ -485,7 +485,7 @@ if (!$ReleaseManifestBrand) {
 
 if ($ListProductVersions) {
 	Write-Host "Available Versions for $($ReleaseManifestBrand.Name):"
-	$ReleaseManifestBrand.Release | Sort-Object -Descending -Property "Version" | Select-Object "Version" | ForEach-Object { Write-Host "- $($_.Version)" }
+	$ReleaseManifestBrand.Release | Sort-Object -Descending -Property { [version]$_.Version } | Select-Object "Version" | ForEach-Object { Write-Host "- $($_.Version)" }
 	Exit 0
 }
 
@@ -497,7 +497,7 @@ if ($ProductVersion) {
 		Exit 1
 	}
 } else {
-	$ReleaseManifestVersion = $ReleaseManifestBrand.Release | Sort-Object -Descending -Property "Version" | Select-Object -First 1
+	$ReleaseManifestVersion = $ReleaseManifestBrand.Release | Sort-Object -Descending -Property { [version]$_.Version } | Select-Object -First 1
 }
 
 if (!$ReleaseManifestVersion) {
