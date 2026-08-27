@@ -854,7 +854,7 @@ if ($Server -and !$InvokedFromRemote) {
 			if (!($existingSources.Data | Where-Object { $_.SourceType -eq "$ProductSourceType" -and $_.SourceDescription -eq "${SyslogSourceHost}:${SyslogSourcePort}" })) {
 				$response = Invoke-RestMethod -Credential $ApiCredential -Uri "$FastvueReporterUrl/_/api?f=Settings.Sources.AddRoot" -Method Post -ContentType "application/json" -Body @"
 				{
-					"Type":"SonicWall",
+					"Type":"$ProductSourceType",
 					"Options": {
 						"Host": "$SyslogSourceHost",
 						"Port": $SyslogSourcePort,
