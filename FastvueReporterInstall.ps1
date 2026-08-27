@@ -250,7 +250,7 @@ param (
 	[string]$ProxyAuthDomain = $null
 )
 
-Set-Variable -Option Constant FastvueReporterInstallScriptVersion "0.1.2"
+Set-Variable -Option Constant FastvueReporterInstallScriptVersion "0.1.3"
 
 if ($Version) {
 	Write-Output $FastvueReporterInstallScriptVersion
